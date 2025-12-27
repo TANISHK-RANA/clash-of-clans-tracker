@@ -46,12 +46,12 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: true, // Allow all origins for localtunnel
   credentials: true
 }));
 app.use(express.json());
 
-// Routes
+// API Routes
 app.use('/api/player', playerRoutes);
 app.use('/api/clan', clanRoutes);
 
@@ -59,6 +59,22 @@ app.use('/api/clan', clanRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Clash of Clans Tracker API is running' });
 });
+
+// Serve static files from React build
+const clientBuildPath = path.join(__dirname, '..', 'client', 'dist');
+console.log('📦 Serving static files from:', clientBuildPath);
+
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath));
+  
+  // Handle React Router - serve index.html for all non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+  console.log('✅ Static file serving enabled');
+} else {
+  console.log('⚠️ Client build not found. Run "npm run build" in client folder.');
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {

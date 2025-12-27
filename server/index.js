@@ -1,4 +1,17 @@
+const path = require('path');
+const fs = require('fs');
+
+// Debug: Show current working directory
+console.log('📂 Current working directory:', process.cwd());
+console.log('📂 Looking for .env at:', path.join(process.cwd(), '.env'));
+console.log('📂 .env file exists:', fs.existsSync(path.join(process.cwd(), '.env')));
+
 require('dotenv').config();
+
+// Debug: Show loaded environment variables
+console.log('🔧 PORT from env:', process.env.PORT);
+console.log('🔧 COC_API_TOKEN from env:', process.env.COC_API_TOKEN ? 'LOADED' : 'NOT LOADED');
+
 const express = require('express');
 const cors = require('cors');
 

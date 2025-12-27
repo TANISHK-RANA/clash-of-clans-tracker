@@ -2,11 +2,34 @@ const path = require('path');
 const fs = require('fs');
 
 // Debug: Show current working directory
+const envPath = path.join(process.cwd(), '.env');
 console.log('📂 Current working directory:', process.cwd());
-console.log('📂 Looking for .env at:', path.join(process.cwd(), '.env'));
-console.log('📂 .env file exists:', fs.existsSync(path.join(process.cwd(), '.env')));
+console.log('📂 Looking for .env at:', envPath);
+console.log('📂 .env file exists:', fs.existsSync(envPath));
 
-require('dotenv').config();
+// Debug: Read and show .env file contents
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  console.log('📄 .env file contents (first 100 chars):', JSON.stringify(envContent.substring(0, 100)));
+  console.log('📄 .env file length:', envContent.length, 'bytes');
+  
+  // Check for common issues
+  if (envContent.charCodeAt(0) === 0xFEFF) {
+    console.log('⚠️ WARNING: .env file has BOM (Byte Order Mark) - this can cause issues!');
+  }
+  if (envContent.includes('\r\n')) {
+    console.log('📝 Line endings: Windows (CRLF)');
+  } else {
+    console.log('📝 Line endings: Unix (LF)');
+  }
+}
+
+const result = require('dotenv').config();
+if (result.error) {
+  console.log('❌ dotenv error:', result.error.message);
+} else {
+  console.log('✅ dotenv parsed successfully');
+}
 
 // Debug: Show loaded environment variables
 console.log('🔧 PORT from env:', process.env.PORT);

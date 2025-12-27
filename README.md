@@ -1,6 +1,6 @@
 # Clash of Clans Tracker
 
-A full-stack web application that allows users to search and view statistics for Clash of Clans players and clans. The application features a beautiful CoC-inspired dark theme with gold accents.
+A full-stack web application that allows users to search and view statistics for Clash of Clans players and clans. The application features a beautiful CoC-inspired dark theme with gold accents, smooth animations, and a fully responsive mobile-friendly design.
 
 ## Features
 
@@ -17,6 +17,12 @@ A full-stack web application that allows users to search and view statistics for
   - War frequency and win streak
   - Top members list
   - Clan labels and description
+
+- **Modern UI/UX**:
+  - Responsive design for mobile, tablet, and desktop
+  - Smooth animations and micro-interactions
+  - CoC-inspired dark theme with gold accents
+  - Touch-friendly interface
 
 ## Architecture
 
@@ -60,7 +66,7 @@ flowchart LR
 | Frontend | React 18, Vite 4 |
 | Backend | Node.js, Express 4 |
 | HTTP Client | Axios (backend), Fetch API (frontend) |
-| Styling | CSS3 with CSS Variables |
+| Styling | CSS3 with CSS Variables, Animations |
 | Fonts | Google Fonts (Cinzel, Crimson Text) |
 | API | Clash of Clans Official API |
 
@@ -104,58 +110,118 @@ clash-of-clans-tracker/
 └── README.md
 ```
 
-## Setup Instructions
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 14.18+ (recommended: 18 LTS or 20 LTS)
-- npm 6+
-- Clash of Clans API token (get one at [developer.clashofclans.com](https://developer.clashofclans.com))
+- **Node.js** 14.18+ (recommended: 18 LTS or 20 LTS) - [Download](https://nodejs.org/)
+- **Git** - [Download](https://git-scm.com/downloads)
+- **Clash of Clans API token** - [Get one here](https://developer.clashofclans.com)
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/TANISHK-RANA/clash-of-clans-tracker.git
 cd clash-of-clans-tracker
 ```
 
-### 2. Backend Setup
+### 2. Install Dependencies
 
 ```bash
-# Navigate to server directory
+# Install backend dependencies
 cd server
-
-# Install dependencies
 npm install
 
-# Create environment file
-# Copy .env.example to .env and add your API token
-echo COC_API_TOKEN=your_api_token_here > .env
+# Install frontend dependencies
+cd ../client
+npm install
+```
+
+### 3. Configure API Token
+
+Create a `.env` file in the `server/` directory:
+
+```bash
+cd ../server
+```
+
+**On Windows (PowerShell):**
+```powershell
+"COC_API_TOKEN=your_api_token_here`nPORT=5000" | Out-File -FilePath .env -Encoding ascii
+```
+
+**On Mac/Linux:**
+```bash
+echo "COC_API_TOKEN=your_api_token_here" > .env
+echo "PORT=5000" >> .env
+```
+
+> **Important:** Replace `your_api_token_here` with your actual token from [developer.clashofclans.com](https://developer.clashofclans.com). Make sure your current IP address is whitelisted in the API key settings.
+
+### 4. Run the Application
+
+**Option A: Development Mode (Two Terminals)**
+
+Terminal 1 - Backend:
+```bash
+cd server
+npm run dev
+```
+
+Terminal 2 - Frontend:
+```bash
+cd client
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+**Option B: Production Mode (Single Server)**
+
+```bash
+# Build the frontend
+cd client
+npm run build
+
+# Start the combined server
+cd ../server
+npm run dev
+```
+
+Open `http://localhost:5000` in your browser.
+
+## Hosting Locally for Internet Access
+
+Want to share your app with friends? Use **localtunnel** to expose your local server to the internet!
+
+### Step 1: Build and Run in Production Mode
+
+```bash
+# Build the frontend
+cd client
+npm run build
 
 # Start the server
+cd ../server
 npm run dev
 ```
 
-The backend will start on `http://localhost:5000`
-
-### 3. Frontend Setup
+### Step 2: Create a Tunnel (New Terminal)
 
 ```bash
-# Navigate to client directory (from project root)
-cd client
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
+npx localtunnel --port 5000
 ```
 
-The frontend will start on `http://localhost:5173`
+You'll get a public URL like `https://bright-fish-42.loca.lt`
 
-### 4. Access the Application
+### Step 3: Share the URL!
 
-Open your browser and navigate to `http://localhost:5173`
+Give the URL to anyone - they can access your Clash of Clans Tracker from anywhere in the world!
+
+> **Notes:**
+> - Keep both terminals running to keep the app accessible
+> - The URL changes each time you restart localtunnel
+> - First-time visitors will see a "Click to Continue" splash page (normal behavior)
 
 ## API Endpoints
 
@@ -185,6 +251,43 @@ Open your browser and navigate to `http://localhost:5173`
 | `COC_API_TOKEN` | Your Clash of Clans API token | Yes |
 | `PORT` | Server port (default: 5000) | No |
 
+## Troubleshooting
+
+### "Failed to fetch player/clan data"
+
+1. **Check your API token** - Make sure `.env` file exists in `server/` folder with your token
+2. **Verify IP whitelist** - Your current IP must be whitelisted at [developer.clashofclans.com](https://developer.clashofclans.com)
+3. **Restart the server** - Changes to `.env` require a server restart
+
+### "Token not loading" / ".env file is empty"
+
+1. Ensure `.env` is in the `server/` folder (not project root or client folder)
+2. No spaces around `=` sign: `COC_API_TOKEN=xxx` ✅
+3. No quotes around the token value
+4. Try recreating the file using command line (see Quick Start section)
+
+### "localtunnel not found"
+
+If you get an npm error, try:
+```bash
+# Create npm folder if missing (Windows)
+mkdir %APPDATA%\npm
+
+# Or run from project directory
+cd clash-of-clans-tracker
+npx localtunnel --port 5000
+```
+
+### "Port already in use"
+
+```bash
+# Find and kill process on port 5000 (Windows PowerShell)
+Get-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess | Stop-Process -Force
+
+# Mac/Linux
+lsof -ti:5000 | xargs kill -9
+```
+
 ## Design System
 
 ### Color Palette
@@ -205,12 +308,20 @@ Open your browser and navigate to `http://localhost:5173`
 - **Display Font**: Cinzel (headings, titles)
 - **Body Font**: Crimson Text (content, descriptions)
 
+### Responsive Breakpoints
+
+| Device | Width |
+|--------|-------|
+| Mobile | < 480px |
+| Tablet | 481px - 768px |
+| Desktop | > 768px |
+
 ## Security Notes
 
 - API token is stored server-side only (in `.env`)
 - Frontend never has access to the API token
 - `.env` file is gitignored and never committed
-- CORS is configured to only allow the frontend origin
+- CORS is configured to allow frontend origins
 
 ## Scripts
 
@@ -219,7 +330,7 @@ Open your browser and navigate to `http://localhost:5173`
 | Script | Command | Description |
 |--------|---------|-------------|
 | `start` | `npm start` | Start production server |
-| `dev` | `npm run dev` | Start with auto-reload |
+| `dev` | `npm run dev` | Start development server |
 
 ### Client
 
@@ -236,4 +347,3 @@ This content is not affiliated with, endorsed, sponsored, or specifically approv
 ## License
 
 MIT License
-
